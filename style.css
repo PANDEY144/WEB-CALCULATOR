@@ -1,0 +1,276 @@
+/* ── Reset ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ── Variables ── */
+:root {
+  --bg:        #f2ede6;
+  --ink:       #111;
+  --rule:      #c8c0b4;
+  --num-bg:    #ffffff;
+  --num-hover: #e8e3db;
+  --fn-bg:     #ddd7ce;
+  --fn-hover:  #ccc5bb;
+  --op-bg:     #111;
+  --op-text:   #f2ede6;
+  --op-hover:  #2e2e2e;
+  --op-active: #ff5500;
+  --eq-bg:     #ff5500;
+  --eq-hover:  #e04a00;
+  --shadow:    4px 4px 0px #111;
+  --mono:      'IBM Plex Mono', monospace;
+  --display:   'Bebas Neue', sans-serif;
+  --radius:    6px;
+}
+
+/* ── Body ── */
+html, body {
+  min-height: 100vh;
+  background: var(--bg);
+  font-family: var(--mono);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* ── Grid background ── */
+.grid-bg {
+  position: fixed; inset: 0; z-index: 0;
+  background-image:
+    linear-gradient(var(--rule) 1px, transparent 1px),
+    linear-gradient(90deg, var(--rule) 1px, transparent 1px);
+  background-size: 40px 40px;
+  opacity: .45;
+}
+
+/* ── Wrapper ── */
+.wrapper {
+  position: relative; z-index: 1;
+  display: flex;
+  gap: 1.2rem;
+  align-items: flex-start;
+  padding: 1rem;
+}
+
+/* ── Calculator card ── */
+.calc {
+  width: 300px;
+  background: var(--bg);
+  border: 2px solid var(--ink);
+  border-radius: var(--radius);
+  box-shadow: 6px 6px 0 var(--ink);
+  overflow: hidden;
+  animation: popIn .4s cubic-bezier(.34,1.56,.64,1) both;
+}
+
+@keyframes popIn {
+  from { opacity: 0; transform: scale(.92) translateY(10px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* ── Display ── */
+.display {
+  background: var(--ink);
+  padding: 1.2rem 1.4rem 1rem;
+  min-height: 130px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.display-brand {
+  font-size: .6rem;
+  letter-spacing: .25em;
+  color: #555;
+  text-transform: uppercase;
+}
+
+.display-expr {
+  font-size: .8rem;
+  color: #666;
+  font-weight: 300;
+  letter-spacing: .05em;
+  min-height: 1.2em;
+  text-align: right;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.display-main {
+  font-family: var(--display);
+  font-size: 4rem;
+  color: #f2ede6;
+  text-align: right;
+  line-height: 1;
+  letter-spacing: .02em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: font-size .1s;
+}
+
+/* ── Keypad ── */
+.keypad {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--rule);
+  border-top: 2px solid var(--ink);
+}
+
+/* ── Buttons ── */
+.btn {
+  border: none;
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 1rem;
+  font-weight: 500;
+  padding: 0;
+  height: 68px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: background .12s, color .12s, transform .08s;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+.btn:active { transform: scale(.92); }
+
+/* Number buttons */
+.btn-num {
+  background: var(--num-bg);
+  color: var(--ink);
+}
+.btn-num:hover { background: var(--num-hover); }
+
+/* Function buttons */
+.btn-fn {
+  background: var(--fn-bg);
+  color: var(--ink);
+  font-size: .85rem;
+  letter-spacing: .02em;
+}
+.btn-fn:hover { background: var(--fn-hover); }
+
+/* Operator buttons */
+.btn-op {
+  background: var(--op-bg);
+  color: var(--op-text);
+  font-size: 1.3rem;
+}
+.btn-op:hover { background: var(--op-hover); }
+.btn-op.active-op {
+  background: var(--op-active);
+  color: #fff;
+}
+
+/* Equals button */
+.btn-eq {
+  background: var(--eq-bg);
+  color: #fff;
+  font-size: 1.4rem;
+}
+.btn-eq:hover { background: var(--eq-hover); }
+
+/* Zero (wide) */
+.btn-zero {
+  grid-column: span 2;
+  justify-content: flex-start;
+  padding-left: 1.4rem;
+}
+
+/* ── Press ripple ── */
+.btn::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: rgba(255,255,255,.18);
+  opacity: 0;
+  border-radius: inherit;
+  transition: opacity .3s;
+}
+.btn.pressed::after { opacity: 1; transition: opacity 0s; }
+
+/* ── History Panel ── */
+.history-panel {
+  width: 200px;
+  background: var(--bg);
+  border: 2px solid var(--ink);
+  border-radius: var(--radius);
+  box-shadow: 6px 6px 0 var(--ink);
+  padding: 1rem;
+  max-height: 500px;
+  display: flex;
+  flex-direction: column;
+  gap: .6rem;
+  animation: popIn .4s .1s cubic-bezier(.34,1.56,.64,1) both;
+}
+
+.history-label {
+  font-size: .6rem;
+  letter-spacing: .2em;
+  color: var(--ink);
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--rule);
+  padding-bottom: .5rem;
+}
+
+#history-list {
+  list-style: none;
+  overflow-y: auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+}
+
+#history-list::-webkit-scrollbar { width: 3px; }
+#history-list::-webkit-scrollbar-thumb { background: var(--rule); }
+
+.history-empty {
+  font-size: .7rem;
+  color: #aaa;
+  font-weight: 300;
+}
+
+.history-item {
+  font-size: .72rem;
+  line-height: 1.5;
+  border-left: 2px solid var(--rule);
+  padding-left: .6rem;
+  cursor: pointer;
+  transition: border-color .15s;
+  animation: fadeUp .2s ease both;
+}
+.history-item:hover { border-color: var(--eq-bg); }
+.history-item .h-expr { color: #888; font-weight: 300; }
+.history-item .h-res  { color: var(--ink); font-weight: 500; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Display flash animation ── */
+@keyframes flash {
+  0%   { opacity: 1; }
+  40%  { opacity: .3; }
+  100% { opacity: 1; }
+}
+.display-main.flash { animation: flash .2s ease; }
+
+/* ── Error shake ── */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25%       { transform: translateX(-6px); }
+  75%       { transform: translateX(6px); }
+}
+.display.shake { animation: shake .25s ease; }
+
+/* ── Responsive ── */
+@media (max-width: 540px) {
+  .wrapper { flex-direction: column; align-items: center; }
+  .history-panel { width: 300px; max-height: 160px; }
+}
